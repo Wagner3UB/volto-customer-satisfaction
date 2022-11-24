@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Portal } from 'react-portal';
-import { defineMessages, useIntl } from 'react-intl';
-import { useSelector, useDispatch } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from "react";
+import { Portal } from "react-portal";
+import { defineMessages, useIntl } from "react-intl";
+import { useSelector, useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import {
   Container,
   Segment,
@@ -13,70 +13,70 @@ import {
   Form,
   Input,
   Message,
-} from 'semantic-ui-react';
+} from "semantic-ui-react";
 
-import { injectLazyLibs } from '@plone/volto/helpers/Loadable/Loadable';
-import { Pagination, Toolbar, Unauthorized } from '@plone/volto/components';
-import { Helmet, flattenToAppURL } from '@plone/volto/helpers';
+import { injectLazyLibs } from "@plone/volto/helpers/Loadable/Loadable";
+import { Pagination, Toolbar, Unauthorized } from "@plone/volto/components";
+import { Helmet, flattenToAppURL } from "@plone/volto/helpers";
 
-import Comments from './Comments';
+import Comments from "./Comments";
 
 import {
   getCustomerSatisfaction,
   deleteFeedbacks,
   resetDeleteFeedbacks,
-} from '../../../actions';
-import CSPanelMenu from './CSPanelMenu';
-import './cs-panel.css';
+} from "../../../actions";
+import CSPanelMenu from "./CSPanelMenu";
+import "./cs-panel.css";
 
 const messages = defineMessages({
   cs_controlpanel: {
-    id: 'Customer satisfaction',
-    defaultMessage: 'Customer satisfaction',
+    id: "Customer satisfaction",
+    defaultMessage: "Customer satisfaction",
   },
 
   select_item: {
-    id: 'customer_satisfaction_select_item',
-    defaultMessage: 'Select item',
+    id: "customer_satisfaction_select_item",
+    defaultMessage: "Select item",
   },
   all: {
-    id: 'customer_satisfaction_all',
-    defaultMessage: 'All',
+    id: "customer_satisfaction_all",
+    defaultMessage: "All",
   },
   page: {
-    id: 'customer_satisfaction_page',
-    defaultMessage: 'Page',
+    id: "customer_satisfaction_page",
+    defaultMessage: "Page",
   },
   positive_votes: {
-    id: 'customer_satisfaction_positive_votes',
-    defaultMessage: 'Positive votes',
+    id: "customer_satisfaction_positive_votes",
+    defaultMessage: "Positive votes",
   },
   negative_votes: {
-    id: 'customer_satisfaction_negative_votes',
-    defaultMessage: 'Negative votes',
+    id: "customer_satisfaction_negative_votes",
+    defaultMessage: "Negative votes",
   },
   last_vote: {
-    id: 'customer_satisfaction_last_vote',
-    defaultMessage: 'Last vote',
+    id: "customer_satisfaction_last_vote",
+    defaultMessage: "Last vote",
   },
   comments: {
-    id: 'customer_satisfaction_comments',
-    defaultMessage: 'Comments',
+    id: "customer_satisfaction_comments",
+    defaultMessage: "Comments",
   },
   filter_title: {
-    id: 'customer_satisfaction_filter_title',
-    defaultMessage: 'Filter title',
+    id: "customer_satisfaction_filter_title",
+    defaultMessage: "Filter title",
   },
   items_selected: {
-    id: 'customer_satisfaction_items_selected',
-    defaultMessage: 'items selected.',
+    id: "customer_satisfaction_items_selected",
+    defaultMessage: "items selected.",
   },
   reset_feedbacks: {
-    id: 'customer_satisfaction_reset_feedbacks',
-    defaultMessage: 'Reset feedbacks',
+    id: "customer_satisfaction_reset_feedbacks",
+    defaultMessage: "Reset feedbacks",
   },
   confirm_delete_selected: {
-    id: 'customer_satisfaction_confirm_delete_selected',
+    id: "customer_satisfaction_confirm_delete_selected",
     defaultMessage: "Are you sure you want to reset this page's feedbacks?",
   },
 });
@@ -84,20 +84,20 @@ const CSPanel = ({ moment: Moment }) => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const location = useLocation();
-  const pathname = location.pathname ?? '/';
+  const pathname = location.pathname ?? "/";
 
   const moment = Moment.default;
   moment.locale(intl.locale);
 
   const [b_size, setB_size] = useState(50);
 
-  const [sort_on, setSort_on] = useState('last_vote');
-  const [sort_order, setSort_order] = useState('descending');
+  const [sort_on, setSort_on] = useState("last_vote");
+  const [sort_order, setSort_order] = useState("descending");
 
   const [currentPage, setCurrentPage] = useState(0);
 
-  const [searchableText, setSearchableText] = useState('');
-  const [text, setText] = useState('');
+  const [searchableText, setSearchableText] = useState("");
+  const [text, setText] = useState("");
   const [isClient, setIsClient] = useState(false);
 
   const [itemsSelected, setItemsSelected] = useState([]);
@@ -113,22 +113,22 @@ const CSPanel = ({ moment: Moment }) => {
 
   const [viewComments, setViewComments] = useState(null);
   const customerSatisfaction = useSelector(
-    (state) => state.getCustomerSatisfaction,
+    (state) => state.getCustomerSatisfaction
   );
   const isUnauthorized = useMemo(
     () =>
       customerSatisfaction?.error &&
       customerSatisfaction?.error?.status === 401,
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [customerSatisfaction?.error],
+    [customerSatisfaction?.error]
   );
   const deleteFeedbacksState = useSelector(
-    (state) => state.deleteFeedbacks.subrequests,
+    (state) => state.deleteFeedbacks.subrequests
   );
 
   const deleteFeedbacksEnd =
     Object.keys(deleteFeedbacksState ?? [])?.filter(
-      (k) => deleteFeedbacksState[k].loaded === true,
+      (k) => deleteFeedbacksState[k].loaded === true
     )?.length > 0;
 
   useEffect(() => {
@@ -142,8 +142,8 @@ const CSPanel = ({ moment: Moment }) => {
         b_start: currentPage * b_size,
         sort_on,
         sort_order,
-        text: text && text.length > 0 ? text + '*' : null,
-      }),
+        text: text && text.length > 0 ? text + "*" : null,
+      })
     );
   };
 
@@ -154,10 +154,10 @@ const CSPanel = ({ moment: Moment }) => {
 
   const changeSort = (column) => {
     if (sort_on === column) {
-      if (sort_order === 'ascending') {
-        setSort_order('descending');
+      if (sort_order === "ascending") {
+        setSort_order("descending");
       } else {
-        setSort_order('ascending');
+        setSort_order("ascending");
       }
     } else {
       setSort_on(column);
@@ -165,17 +165,17 @@ const CSPanel = ({ moment: Moment }) => {
   };
 
   const resetFeedbacks = (items) => {
-    let items_titles = '';
+    let items_titles = "";
     items.forEach((i) => {
-      items_titles += i.title + '\n';
+      items_titles += i.title + "\n";
     });
 
     if (
       // eslint-disable-next-line no-alert
       window.confirm(
         intl.formatMessage(messages.confirm_delete_selected) +
-          '\n' +
-          items_titles,
+          "\n" +
+          items_titles
       )
     ) {
       // eslint-disable-next-line no-unused-expressions
@@ -217,7 +217,7 @@ const CSPanel = ({ moment: Moment }) => {
               {itemsSelected.length > 0 && (
                 <Message className="selected-items" color="teal">
                   <div className="text">
-                    {itemsSelected?.length}{' '}
+                    {itemsSelected?.length}{" "}
                     {intl.formatMessage(messages.items_selected)}
                   </div>
                   <div className="actions">
@@ -227,7 +227,7 @@ const CSPanel = ({ moment: Moment }) => {
                         resetFeedbacks(itemsSelected);
                       }}
                     >
-                      {intl.formatMessage(messages.reset_feedbacks)}
+                      teste
                     </Button>
                   </div>
                 </Message>
@@ -253,29 +253,29 @@ const CSPanel = ({ moment: Moment }) => {
                       <Table.Row>
                         <Table.HeaderCell width={1}></Table.HeaderCell>
                         <Table.HeaderCell
-                          sorted={sort_on === 'title' ? sort_order : null}
-                          onClick={() => changeSort('title')}
+                          sorted={sort_on === "title" ? sort_order : null}
+                          onClick={() => changeSort("title")}
                           width={4}
                         >
                           {intl.formatMessage(messages.page)}
                         </Table.HeaderCell>
                         <Table.HeaderCell
-                          sorted={sort_on === 'ok' ? sort_order : null}
-                          onClick={() => changeSort('ok')}
+                          sorted={sort_on === "ok" ? sort_order : null}
+                          onClick={() => changeSort("ok")}
                           textAlign="center"
                         >
                           {intl.formatMessage(messages.positive_votes)}
                         </Table.HeaderCell>
                         <Table.HeaderCell
-                          sorted={sort_on === 'nok' ? sort_order : null}
-                          onClick={() => changeSort('nok')}
+                          sorted={sort_on === "nok" ? sort_order : null}
+                          onClick={() => changeSort("nok")}
                           textAlign="center"
                         >
                           {intl.formatMessage(messages.negative_votes)}
                         </Table.HeaderCell>
                         <Table.HeaderCell
-                          sorted={sort_on === 'last_vote' ? sort_order : null}
-                          onClick={() => changeSort('last_vote')}
+                          sorted={sort_on === "last_vote" ? sort_order : null}
+                          onClick={() => changeSort("last_vote")}
                           textAlign="center"
                           width={3}
                         >
@@ -302,8 +302,8 @@ const CSPanel = ({ moment: Moment }) => {
                                 } else {
                                   setItemsSelected(
                                     itemsSelected.filter(
-                                      (i) => i.url !== item.url,
-                                    ),
+                                      (i) => i.url !== item.url
+                                    )
                                   );
                                 }
                               }}
@@ -322,7 +322,7 @@ const CSPanel = ({ moment: Moment }) => {
                           <Table.Cell textAlign="center">{item.nok}</Table.Cell>
                           <Table.Cell textAlign="center">
                             {moment(item.last_vote).format(
-                              'DD/MM/YYYY HH:mm:ss',
+                              "DD/MM/YYYY HH:mm:ss"
                             )}
                           </Table.Cell>
                           <Table.Cell
@@ -349,7 +349,7 @@ const CSPanel = ({ moment: Moment }) => {
                     <Pagination
                       current={currentPage}
                       total={Math.ceil(
-                        customerSatisfaction?.result?.items_total / b_size,
+                        customerSatisfaction?.result?.items_total / b_size
                       )}
                       pageSize={b_size}
                       pageSizes={[50, intl.formatMessage(messages.all)]}
@@ -374,11 +374,11 @@ const CSPanel = ({ moment: Moment }) => {
         <Unauthorized />
       )}
       {isClient && (
-        <Portal node={document.getElementById('toolbar')}>
+        <Portal node={document.getElementById("toolbar")}>
           <Toolbar pathname={pathname} inner={<span />} />
         </Portal>
       )}
     </>
   );
 };
-export default injectLazyLibs(['moment'])(CSPanel);
+export default injectLazyLibs(["moment"])(CSPanel);
